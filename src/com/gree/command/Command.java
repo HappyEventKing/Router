@@ -1,4 +1,6 @@
-package com.gree;
+package com.gree.command;
+
+import com.gree.router.Router;
 
 import java.io.BufferedReader;
 import java.io.IOException;

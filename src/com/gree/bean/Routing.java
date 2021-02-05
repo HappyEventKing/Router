@@ -7,7 +7,7 @@ import java.util.Arrays;
  * @author:
  * @time: 2021/2/4
  */
-public class RoutingTable {
+public class Routing {
     int destination;
     int[] route;
 

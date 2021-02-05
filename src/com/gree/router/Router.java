@@ -1,13 +1,10 @@
-package com.gree;
+package com.gree.router;
 
-import com.gree.bean.RoutingTable;
+import com.gree.command.Command;
+import com.gree.bean.Routing;
+import com.gree.udp.UdpServer;
 
-import javax.swing.*;
-import java.beans.IntrospectionException;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Arrays;
+import java.util.ArrayList;
 
 /**
  * @description:Router实现
@@ -18,7 +15,7 @@ public class Router extends Thread {
     public static int routerId;//RouterID
     public static int myPort;//UDPServer端口
     public static int otherPort[];//连接其他Router的端口
-    public static RoutingTable routingTable;//路由表
+    public static ArrayList<Routing>  routingTable;//路由表
 
     /**
      * @Description: 发送路由表, 实现(Each router sends out their routing table every 30 seconds.)
@@ -60,6 +57,7 @@ public class Router extends Thread {
      */
     public static void detect() {
         while (true) {
+            //TODO:进行路由检测
             try {
                 Thread.sleep(30 * 6 * 1000);
                 //TODO:待补充实现方法
@@ -79,6 +77,10 @@ public class Router extends Thread {
      * @Date: 2021/2/5
      */
     public void run() {
+        //TODO:启动Udp服务端
+        new UdpServer(Router.myPort).start();//启动Udp服务端
+        //TODO:启动Udp客户端,根据启动参数连接Udp服务
+        //TODO:初始化路由表
         new Thread() {
             public void run() {
                 Router.sendOut();
