@@ -4,7 +4,7 @@ import com.gree.command.Command;
 import com.gree.router.Router;
 
 /**
- * @description:主方法
+ * @description:主类,实现主方法
  * @author:
  * @time: 2021/2/4
  */

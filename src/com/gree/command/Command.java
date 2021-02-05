@@ -11,14 +11,14 @@ import java.io.InputStreamReader;
  * @author:
  * @time: 2021/2/5
  */
-public class Command extends Thread{
+public class Command extends Thread {
     /**
-    * @Description: 判断启动命令
-    * @Param:
-    * @return: boolean
-    * @Author:
-    * @Date: 2021/2/5
-    */
+     * @Description: 判断启动命令
+     * @Param:
+     * @return: boolean
+     * @Author:
+     * @Date: 2021/2/5
+     */
     public static boolean isStartArguments(String[] args) {
         if (args.length < 2) {//判断启动参数是否正确,启动参数必须包括ID和myport;
             System.out.println("参数错误,至少需要输入两个个参数");
@@ -42,79 +42,93 @@ public class Command extends Thread{
         }
     }
 
-    /** 
-    * @Description: N命令
-    * @Param: 
-    * @return: void
-    * @Author: 
-    * @Date: 2021/2/5
-    */
-   public static void commandN(){
-       //TODO:待补充实现方法
+    /**
+     * @Description: N命令
+     * @Param:
+     * @return: void
+     * @Author:
+     * @Date: 2021/2/5
+     */
+    public static void commandN() {
+        if (Router.neighbors != null) {
+            for (int i = 0; i < Router.neighbors.size(); i++) {
+                System.out.print(Router.neighbors.get(i).getNeighborId() + "\t");
+            }
+            System.out.println();
+        }
     }
 
     /**
-    * @Description: RT命令
-    * @Param:
-    * @return: void
-    * @Author:
-    * @Date: 2021/2/5
-    */
-    public static void commandRT(){
+     * @Description: RT命令
+     * @Param:
+     * @return: void
+     * @Author:
+     * @Date: 2021/2/5
+     */
+    public static void commandRT() {
 
+        System.out.println("Destination" + "\t" + "route");
+        if (Router.routingTable != null) {
+            for (int i = 0; i < Router.routingTable.size(); i++) {
+                System.out.print(Router.routingTable.get(i).getDestination() + "\t");
+                for (int j = 0; j < Router.routingTable.get(i).getRoute().length; j++) {
+                    System.out.println(Router.routingTable.get(i).getRoute()[j] + "\t");
+                }
+            }
+        }
     }
 
     /**
-    * @Description: D命令
-    * @Param:
-    * @return: void
-    * @Author:
-    * @Date: 2021/2/5
-    */
-    public static void commandD(int n){
+     * @Description: D命令
+     * @Param:
+     * @return: void
+     * @Author:
+     * @Date: 2021/2/5
+     */
+    public static void commandD(int n) {
         //TODO:待补充实现方法
     }
 
     /**
-    * @Description: PK命令
-    * @Param:
-    * @return: void
-    * @Author:
-    * @Date: 2021/2/5
-    */
-    public static void commandPK(int[] n){
+     * @Description: PK命令
+     * @Param:
+     * @return: void
+     * @Author:
+     * @Date: 2021/2/5
+     */
+    public static void commandPK(int[] n) {
         //TODO:待补充实现方法
     }
 
     /**
-    * @Description: R命令
-    * @Param:
-    * @return: void
-    * @Author:
-    * @Date: 2021/2/5
-    */
-    public static void commandR(int n){
+     * @Description: R命令
+     * @Param:
+     * @return: void
+     * @Author:
+     * @Date: 2021/2/5
+     */
+    public static void commandR(int n) {
         //TODO:待补充实现方法
     }
 
     /**
-    * @Description: S命令
-    * @Param:
-    * @return: void
-    * @Author:
-    * @Date: 2021/2/5
-    */
-    public static void commandS(){
+     * @Description: S命令
+     * @Param:
+     * @return: void
+     * @Author:
+     * @Date: 2021/2/5
+     */
+    public static void commandS() {
         //TODO:待补充实现方法
     }
 
     /**
-    * @Description: 判断并执行命令
-    * @Param:
-    * @return: boolean
-    * @Author:
-    * @Date: 2021/2/5
-    */
+     * @Description: 判断并执行命令
+     * @Param:
+     * @return: boolean
+     * @Author:
+     * @Date: 2021/2/5
+     */
     public static boolean isCommand(String str) {
         String[] commands = str.split("\\s+");
         switch (commands.length) {
@@ -177,13 +191,13 @@ public class Command extends Thread{
     }
 
     /**
-    * @Description:
-    * @Param:
-    * @return: void
-    * @Author:
-    * @Date: 2021/2/5
-    */
-    public void run(){
+     * @Description:
+     * @Param:
+     * @return: void
+     * @Author:
+     * @Date: 2021/2/5
+     */
+    public void run() {
         while (true) {
             System.out.print("Router" + Router.routerId + ":" + Router.myPort + ">>");//输出提示信息,等待命令输入
             BufferedReader buf = new BufferedReader(new InputStreamReader(System.in));
