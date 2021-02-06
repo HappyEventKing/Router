@@ -1,5 +1,6 @@
 package com.gree.command;
 
+import com.gree.bean.Routing;
 import com.gree.router.Router;
 
 import java.io.BufferedReader;
@@ -99,7 +100,31 @@ public class Command extends Thread {
      * @Date: 2021/2/5
      */
     public static void commandPK(int[] n) {
-        //TODO:待补充实现方法
+        Routing addrouting = new Routing();
+        addrouting.setDestination(n[n.length - 1]);
+        addrouting.setAutoUpdateFlag(false);
+        addrouting.setRoute(n);
+        int j;
+        for (j = 0; j < Router.routingTable.size(); j++) {
+            Routing myRouting = Router.routingTable.get(j);
+            if (addrouting.getDestination() == myRouting.getDestination()) {
+                if (!Command.isRefusedPassNode(addrouting.getRoute()))//非拒绝节点则更新
+                {
+                    Router.routingTable.get(j).setRoute(addrouting.getRoute());//更新路径信息
+                    Router.routingTable.get(j).setAutoUpdateFlag(addrouting.isAutoUpdateFlag());
+                    Router.updateTimes++;//更新次数加1
+                }
+                break;
+            }
+        }
+        if ((j == Router.routingTable.size()) && (addrouting.getDestination() != Router.routerId))//本路由无此路由信息,则添加此路由表项
+        {
+            if ((!Command.isRefusedPassNode(addrouting.getRoute())))//非拒绝节点和非特殊路径则更新
+            {
+                Router.routingTable.add(addrouting);
+                Router.updateTimes++;//更新次数加1
+            }
+        }
     }
 
     /**
@@ -235,5 +260,9 @@ public class Command extends Thread {
             }
         }
         return false;
+    }
+
+    public static boolean isSpecifiedPriorityRoute(Routing routing) {
+        return (!routing.isAutoUpdateFlag());
     }
 }

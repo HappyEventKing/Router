@@ -60,17 +60,18 @@ public class Router extends Thread {
             for (j = 0; j < Router.routingTable.size(); j++) {
                 Routing myRouting = Router.routingTable.get(j);
                 if (sourceRouting.getDestination() == myRouting.getDestination()) {
-                    if ((sourceRouting.getRoute().length + 1) < myRouting.getRoute().length)//如果发送来的路由比本路由路径短,则替换//TODO:缺少对PK命令的判断
+                    if (((sourceRouting.getRoute().length + 1) < myRouting.getRoute().length)||(sourceRouting.isAutoUpdateFlag()==false))//如果发送来的路由比本路由路径短,则替换
                     {
                         int route[] = new int[(sourceRouting.getRoute().length + 1)];
                         route[0] = sourceRouterId;
                         for (int k = 1; k < (sourceRouting.getRoute().length + 1); k++) {
                             route[k] = sourceRouting.getRoute()[k - 1];
                         }
-                        if(!Command.isRefusedPassNode(route))
+                        if((!Command.isRefusedPassNode(route))&&(!Command.isSpecifiedPriorityRoute(Router.routingTable.get(j))))//非拒绝节点和非特殊路径则更新
                         {
-                            Router.routingTable.get(j).setRoute(route);//更新路径信息
-                            Router.updateTimes++;//更新次数加1
+                                Router.routingTable.get(j).setRoute(route);//更新路径信息
+                                Router.updateTimes++;//更新次数加1
+
                         }
 
                     }
@@ -88,7 +89,8 @@ public class Router extends Thread {
                     route[k] = sourceRouting.getRoute()[k - 1];
                 }
                 routing.setRoute(route);
-                if(!Command.isRefusedPassNode(route)) {
+                if((!Command.isRefusedPassNode(route))&&(!Command.isSpecifiedPriorityRoute(routing)))//非拒绝节点和非特殊路径则更新
+                {
                     Router.routingTable.add(routing);
                     Router.updateTimes++;//更新次数加1
                 }
@@ -111,7 +113,8 @@ public class Router extends Thread {
         int route[] = new int[1];
         route[0] = nextRouterId;
         routing.setRoute(route);
-        if(!Command.isRefusedPassNode(route)) {
+        if((!Command.isRefusedPassNode(route))&&(!Command.isSpecifiedPriorityRoute(routing))) //非拒绝节点和非特殊路径则更新
+        {
             Router.routingTable.add(routing);
             Router.updateTimes++;//更新次数加1
         }
@@ -143,7 +146,8 @@ public class Router extends Thread {
                 if (Router.routingTable.get(j).getDestination() == nextRouterId) {//路由表中存在此领居节点且目的地为此领居,则覆盖
                     int route[] = new int[1];
                     route[0] = nextRouterId;
-                    if(!Command.isRefusedPassNode(route)) {
+                    if((!Command.isRefusedPassNode(route))&&(!Command.isSpecifiedPriorityRoute(Router.routingTable.get(j))))//非拒绝节点和非特殊路径则更新
+                    {
                         Router.routingTable.get(j).setRoute(route);
                         Router.updateTimes++;//更新次数加1
                     }
