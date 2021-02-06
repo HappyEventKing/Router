@@ -5,6 +5,7 @@ import com.gree.router.Router;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 /**
  * @description:命令判断与执行
@@ -109,7 +110,10 @@ public class Command extends Thread {
      * @Date: 2021/2/5
      */
     public static void commandR(int n) {
-        //TODO:待补充实现方法
+        if (Router.refusedNode == null) {
+            Router.refusedNode = new ArrayList<Integer>();
+        }
+        Router.refusedNode.add(n);
     }
 
     /**
@@ -120,7 +124,7 @@ public class Command extends Thread {
      * @Date: 2021/2/5
      */
     public static void commandS() {
-        //TODO:待补充实现方法
+        System.out.println("本路由表更新次数:" + Router.updateTimes);
     }
 
     /**
@@ -217,5 +221,19 @@ public class Command extends Thread {
             }
 
         }
+    }
+
+    //判断此更新是否在拒绝更新列表中
+    public static boolean isRefusedPassNode(int[] route) {
+        if (Router.refusedNode != null) {
+            for (int i = 0; i < route.length; i++) {
+                for (int j = 0; j < Router.refusedNode.size(); j++) {
+                    if (route[i] == Router.refusedNode.get(j)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }

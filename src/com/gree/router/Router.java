@@ -18,11 +18,11 @@ public class Router extends Thread {
     public static int myPort;//UDPServer端口
     public static int otherPort[];//连接其他Router的端口
     public static ArrayList<Routing> routingTable;//路由表
-
     public static ArrayList<Neighbor> neighbors;//领居Router
-
     public static UdpServer udpServer;//udpServer对象(一个Router只有一个udp服务端角色)
     public static UdpClient udpClient[];//udp客户端对象(一个Router可扮演多个udp客户端角色)
+    public static int updateTimes = 0;//路由表更新次数
+    public static ArrayList<Integer> refusedNode;
 
     /**
      * @Description: 发送路由表, 实现(Each router sends out their routing table every 30 seconds.)
@@ -67,7 +67,12 @@ public class Router extends Thread {
                         for (int k = 1; k < (sourceRouting.getRoute().length + 1); k++) {
                             route[k] = sourceRouting.getRoute()[k - 1];
                         }
-                        Router.routingTable.get(j).setRoute(route);//更新路径信息
+                        if(!Command.isRefusedPassNode(route))
+                        {
+                            Router.routingTable.get(j).setRoute(route);//更新路径信息
+                            Router.updateTimes++;//更新次数加1
+                        }
+
                     }
                     break;
                 }
@@ -83,7 +88,10 @@ public class Router extends Thread {
                     route[k] = sourceRouting.getRoute()[k - 1];
                 }
                 routing.setRoute(route);
-                Router.routingTable.add(routing);
+                if(!Command.isRefusedPassNode(route)) {
+                    Router.routingTable.add(routing);
+                    Router.updateTimes++;//更新次数加1
+                }
             }
         }
 
@@ -103,7 +111,10 @@ public class Router extends Thread {
         int route[] = new int[1];
         route[0] = nextRouterId;
         routing.setRoute(route);
-        Router.routingTable.add(routing);
+        if(!Command.isRefusedPassNode(route)) {
+            Router.routingTable.add(routing);
+            Router.updateTimes++;//更新次数加1
+        }
     }
 
     /**
@@ -132,7 +143,10 @@ public class Router extends Thread {
                 if (Router.routingTable.get(j).getDestination() == nextRouterId) {//路由表中存在此领居节点且目的地为此领居,则覆盖
                     int route[] = new int[1];
                     route[0] = nextRouterId;
-                    Router.routingTable.get(j).setRoute(route);
+                    if(!Command.isRefusedPassNode(route)) {
+                        Router.routingTable.get(j).setRoute(route);
+                        Router.updateTimes++;//更新次数加1
+                    }
                 }
                 //判断此领居是否在路由表中
                 int k = 0;
@@ -160,6 +174,7 @@ public class Router extends Thread {
             {
                 Router.routingTable.remove(i);
                 i--;
+                Router.updateTimes++;//更新次数加1
             }
         }
     }
