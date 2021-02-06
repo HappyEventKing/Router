@@ -24,82 +24,30 @@ public class UdpServer extends Thread {
     private DatagramSocket datagramSocket;
     private DatagramPacket datagramPacket;
 
+    /**
+    * @Description: 构造函数
+    * @Param: prot:服务端端口
+    * @return:
+    * @Author:
+    * @Date: 2021/2/6
+    */
     public UdpServer(int port) {
         this.udpServerPort = port;
     }
 
+    /**
+    * @Description: 服务端接收进程
+    * @Param:
+    * @return: void
+    * @Author:
+    * @Date: 2021/2/6
+    */
     public void run() {
-        byte[] buffer = new byte[4096];
-        try {
-            datagramSocket = new DatagramSocket(udpServerPort);
-            datagramPacket = new DatagramPacket(buffer, buffer.length);
-            while (true) {
-                this.recevie();//未接收到数据时阻塞在此
-            }
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void recevie() {
+        UdpData udpData = new UdpData(this.udpServerPort,"Server");
         while (true) {
-            try {
-
-                this.datagramSocket.receive(this.datagramPacket);
-                String result = new String(this.datagramPacket.getData(), this.datagramPacket.getOffset(), this.datagramPacket.getLength());
-                JSONObject resultJson = new JSONObject();
-                resultJson = JSONObject.fromString(result);
-                switch (resultJson.getString("DataType")) {
-                    case "RoutingTableData": {
-                        dealRoutingTableData(resultJson);
-                        break;
-                    }
-                    default:
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            udpData.receive();//未接收到数据时阻塞在此
         }
     }
 
-    public void dealRoutingTableData(JSONObject jsonObject) {
-        ArrayList<Routing> routingTable = new ArrayList<Routing>();
-        int sourceRouterId = jsonObject.getInt("SourceRouterId");//源RouterId
-        JSONArray routingTableJson = new JSONArray();
-        routingTableJson = jsonObject.getJSONArray("routingTable");//路由表
-        if (routingTableJson.length() != 0) {
-            Routing routing = new Routing();
-            for (int i = 0; i < routingTableJson.length(); i++) {
-                JSONObject routingJson = new JSONObject();
-                routingJson = routingTableJson.getJSONObject(i);
-                routing.setDestination(routingJson.getInt("Destination"));//目的节点
-                routing.setAutoUpdateFlag(routingJson.getBoolean("AutoUpdateFlag"));//是否自动更新标志位
-                JSONArray routeJson = new JSONArray();
-                routeJson = routingJson.getJSONArray("Route");//路径
-                int route[] = new int[routeJson.length()];
-                for (int j = 0; j < routeJson.length(); j++) {
-                    route[i] = routeJson.getInt(i);
-                    routeJson.put(route[i]);
-                }
-                routing.setRoute(route);
-            }
-            routingTable.add(routing);
-        }
-        Router.updateRoutingTableFromOther(sourceRouterId, routingTable);//更新路由表
-        int i = 0;
-        for (i = 0; i < Router.neighbors.size(); i++) {
-            if (Router.neighbors.get(i).getNeighborId() == sourceRouterId) {
-                Router.neighbors.get(i).neighborLostTimeReset();//清除丢失时间
-                break;
-            }
-        }
-        if (i == Router.neighbors.size())//邻居中还未包含此Router
-        {
-            Neighbor neighbor = new Neighbor(sourceRouterId);
-            Router.neighbors.add(neighbor);//添加此Router;
-            Router.updateRoutingTableFromNeighbor();//更新路由表
-        }
-    }
 
 }

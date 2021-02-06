@@ -64,22 +64,22 @@ public class Router extends Thread {
                     {
                         int route[] = new int[(sourceRouting.getRoute().length + 1)];
                         route[0] = sourceRouterId;
-                        for (int k = 1; k < sourceRouting.getRoute().length; k++) {
+                        for (int k = 1; k < (sourceRouting.getRoute().length + 1); k++) {
                             route[k] = sourceRouting.getRoute()[k - 1];
                         }
-                        Router.routingTable.get(i).setRoute(route);//更新路径信息
+                        Router.routingTable.get(j).setRoute(route);//更新路径信息
                     }
                     break;
                 }
             }
-            if (j == Router.routingTable.size())//本路由无此路由信息,则添加此路由表项
+            if ((j == Router.routingTable.size()) && (sourceRouting.getDestination() != Router.routerId))//本路由无此路由信息,则添加此路由表项
             {
                 Routing routing = new Routing();
                 routing.setAutoUpdateFlag(sourceRouting.isAutoUpdateFlag());
                 routing.setDestination(sourceRouting.getDestination());
                 int route[] = new int[(sourceRouting.getRoute().length + 1)];
                 route[0] = sourceRouterId;
-                for (int k = 1; k < sourceRouting.getRoute().length; k++) {
+                for (int k = 1; k < (sourceRouting.getRoute().length + 1); k++) {
                     route[k] = sourceRouting.getRoute()[k - 1];
                 }
                 routing.setRoute(route);
@@ -89,6 +89,30 @@ public class Router extends Thread {
 
     }
 
+    /**
+     * @Description: 给Router添加领居
+     * @Param: nextRouterId:领居ID
+     * @return: void
+     * @Author:
+     * @Date: 2021/2/6
+     */
+    public static void addNeighborToRoutingTable(int nextRouterId) {
+        Routing routing = new Routing();
+        routing.setAutoUpdateFlag(true);
+        routing.setDestination(nextRouterId);
+        int route[] = new int[1];
+        route[0] = nextRouterId;
+        routing.setRoute(route);
+        Router.routingTable.add(routing);
+    }
+
+    /**
+     * @Description: 根据发现的领居更新路由表
+     * @Param:
+     * @return: void
+     * @Author:
+     * @Date: 2021/2/6
+     */
     public static void updateRoutingTableFromNeighbor() {
 
         //添加新增的领居
@@ -103,13 +127,23 @@ public class Router extends Thread {
             }
             if (j == Router.routingTable.size())//路由表中无此领居节点,则添加
             {
-                Routing routing = new Routing();
-                routing.setAutoUpdateFlag(true);
-                routing.setDestination(nextRouterId);
-                int route[] = new int[1];
-                route[0] = nextRouterId;
-                routing.setRoute(route);
-                Router.routingTable.add(routing);
+                Router.addNeighborToRoutingTable(nextRouterId);
+            } else {
+                if (Router.routingTable.get(j).getDestination() == nextRouterId) {//路由表中存在此领居节点且目的地为此领居,则覆盖
+                    int route[] = new int[1];
+                    route[0] = nextRouterId;
+                    Router.routingTable.get(j).setRoute(route);
+                }
+                //判断此领居是否在路由表中
+                int k = 0;
+                for (k = 0; k < Router.routingTable.size(); k++) {
+                    if (nextRouterId == Router.routingTable.get(k).getDestination()) {
+                        break;
+                    }
+                }
+                if (k == Router.routingTable.size()) {
+                    Router.addNeighborToRoutingTable(nextRouterId);
+                }
             }
         }
         //移除丢失的邻居

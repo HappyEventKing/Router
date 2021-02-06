@@ -72,8 +72,9 @@ public class Command extends Thread {
             for (int i = 0; i < Router.routingTable.size(); i++) {
                 System.out.print(Router.routingTable.get(i).getDestination() + "\t");
                 for (int j = 0; j < Router.routingTable.get(i).getRoute().length; j++) {
-                    System.out.println(Router.routingTable.get(i).getRoute()[j] + "\t");
+                    System.out.print(Router.routingTable.get(i).getRoute()[j] + "\t");
                 }
+                System.out.println();
             }
         }
     }
@@ -124,7 +125,7 @@ public class Command extends Thread {
 
     /**
      * @Description: 判断并执行命令
-     * @Param:
+     * @Param: str:命令
      * @return: boolean
      * @Author:
      * @Date: 2021/2/5
@@ -191,7 +192,7 @@ public class Command extends Thread {
     }
 
     /**
-     * @Description:
+     * @Description: 命令交互进程
      * @Param:
      * @return: void
      * @Author:
