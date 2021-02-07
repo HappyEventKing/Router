@@ -25,29 +25,28 @@ public class UdpServer extends Thread {
     private DatagramPacket datagramPacket;
 
     /**
-    * @Description: 构造函数
-    * @Param: prot:服务端端口
-    * @return:
-    * @Author:
-    * @Date: 2021/2/6
-    */
+     * @Description: 构造函数
+     * @Param: prot:服务端端口
+     * @return:
+     * @Author:
+     * @Date: 2021/2/6
+     */
     public UdpServer(int port) {
         this.udpServerPort = port;
     }
 
     /**
-    * @Description: 服务端接收进程
-    * @Param:
-    * @return: void
-    * @Author:
-    * @Date: 2021/2/6
-    */
+     * @Description: 服务端接收进程
+     * @Param:
+     * @return: void
+     * @Author:
+     * @Date: 2021/2/6
+     */
     public void run() {
-        UdpData udpData = new UdpData(this.udpServerPort,"Server");
+        UdpData udpData = new UdpData(this.udpServerPort, "Server");
         while (true) {
             udpData.receive();//未接收到数据时阻塞在此
         }
     }
-
 
 }

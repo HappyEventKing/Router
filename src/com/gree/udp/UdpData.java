@@ -63,27 +63,26 @@ public class UdpData {
             buffer = this.dataPack("RoutingTableData");
             try {
                 this.datagramPacket = new DatagramPacket(buffer, buffer.length, InetAddress.getByName(this.udpServerIp), this.udpServerPort);
-                this.datagramPacket.setData(buffer);
                 this.datagramSocket.send(this.datagramPacket);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
         }
     }
 
     /**
      * @Description: 打包发送路由表数据
-     * @Param:
+     * @Param: dataType:数据类别
      * @return: byte[] 返回打包后的字节数据
      * @Author:
      * @Date: 2021/2/6
      */
-    public byte[] dataPack(String datType) {
+    public byte[] dataPack(String dataType) {
         if (Router.routingTable != null) {
             JSONObject sendData = new JSONObject();
-            sendData.put("DataType", datType);//数据类别
+            sendData.put("DataType", dataType);//数据类别
             sendData.put("SourceRouterId", Router.routerId);//源RouterId
+            sendData.put("SourceRouterPort", Router.myPort);//源Router服务IP端口
             JSONArray routingTable = new JSONArray();
             for (int i = 0; i < Router.routingTable.size(); i++) {
                 JSONObject routingJson = new JSONObject();
@@ -117,6 +116,7 @@ public class UdpData {
     public void dealRoutingTableData(JSONObject jsonObject) {
         ArrayList<Routing> routingTable = new ArrayList<Routing>();
         int sourceRouterId = jsonObject.getInt("SourceRouterId");//源RouterId
+        int sourceRouterPort = jsonObject.getInt("SourceRouterPort");//源Router服务IP端口
         JSONArray routingTableJson = new JSONArray();
         routingTableJson = jsonObject.getJSONArray("routingTable");//路由表
         if (routingTableJson.length() != 0) {
@@ -142,6 +142,7 @@ public class UdpData {
         for (i = 0; i < Router.neighbors.size(); i++) {
             if (Router.neighbors.get(i).getNeighborId() == sourceRouterId) {
                 Router.neighbors.get(i).neighborLostTimeReset();//清除丢失时间
+                Router.neighbors.get(i).setNeighborPort(sourceRouterPort);//更新邻居端口
                 break;
             }
         }
@@ -149,6 +150,7 @@ public class UdpData {
         {
             Neighbor neighbor = new Neighbor(sourceRouterId);
             Router.neighbors.add(neighbor);//添加此Router;
+            Router.neighbors.get(i).setNeighborPort(sourceRouterPort);//添加邻居端口
             Router.updateRoutingTableFromNeighbor();//更新路由表
         }
     }
@@ -160,9 +162,9 @@ public class UdpData {
      * @Author:
      * @Date: 2021/2/6
      */
-    public void routingTableDataRespone() {
+    public void routingTableDataResponse() {
         if (Router.routingTable != null) {
-            byte buffer[] = this.dataPack("RoutingTableDataRespone");
+            byte buffer[] = this.dataPack("RoutingTableDataResponse");
             this.datagramPacket.setData(buffer);
             try {
                 this.datagramSocket.send(this.datagramPacket);
@@ -193,13 +195,16 @@ public class UdpData {
             resultJson = JSONObject.fromString(result);
             switch (resultJson.getString("DataType")) {
                 case "RoutingTableData": {
-                    dealRoutingTableData(resultJson);
-                    this.routingTableDataRespone();//回复本Router路由表
+                    this.dealRoutingTableData(resultJson);
+                    this.routingTableDataResponse();//回复本Router路由表
                     break;
                 }
-                case "RoutingTableDataRespone": {
-                    dealRoutingTableData(resultJson);
+                case "RoutingTableDataResponse": {
+                    this.dealRoutingTableData(resultJson);
                     break;
+                }
+                case "TTLData": {
+                    this.dealTTLData(resultJson);
                 }
                 default:
             }
@@ -209,5 +214,80 @@ public class UdpData {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+    * @Description: 发送TTL数据
+    * @Param: destination:目的地,TTL:ttl数据
+    * @return: void
+    * @Author:
+    * @Date: 2021/2/7
+    */
+    public void sendTTL(int destination, int TTL) {
+        JSONObject sendData = new JSONObject();
+        sendData.put("DataType", "TTLData");//数据类别
+        sendData.put("Destination", destination);
+        sendData.put("TTL", TTL);
+        String sendStr = sendData.toString();
+        byte sendBuffer[] = new byte[sendStr.length()];
+        sendBuffer = sendStr.getBytes();
+        try {
+            this.datagramPacket = new DatagramPacket(sendBuffer, sendBuffer.length, InetAddress.getByName(this.udpServerIp), this.udpServerPort);
+            this.datagramSocket.send(this.datagramPacket);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+    * @Description: 处理接收到TTL数据
+    * @Param: jsonObject 传入接收到的json数据
+    * @return: void
+    * @Author:
+    * @Date: 2021/2/7
+    */
+    public void dealTTLData(JSONObject jsonObject) {
+        int destination = jsonObject.getInt("Destination");//目的地
+        int TTL = jsonObject.getInt("TTL");//TTL
+        TTL--;
+        if (destination == Router.routerId) {
+            System.out.println("Destination " + destination);
+        } else {
+            if (0 == TTL) {
+                System.out.println("time exceeded " + destination);
+            } else {
+                int j = 0;
+                for (j = 0; j < Router.routingTable.size(); j++) {
+                    if (Router.routingTable.get(j).getDestination() == destination) {
+                        int nextRouterID = Router.routingTable.get(j).getRoute()[0];//获取下一个节点ID
+                        for (int k = 0; k < Router.neighbors.size(); k++) {
+                            if (nextRouterID == Router.neighbors.get(k).getNeighborId())//查询下一个节点的端口
+                            {
+                                UdpClient udpClient = new UdpClient(Router.neighbors.get(k).getNeighborPort());//先发送给相邻的下一个节点
+                                udpClient.sendTTL(destination, TTL);
+                                System.out.println("Forward to " + destination);
+                                udpClient.close();
+                            }
+                        }
+                        break;
+                    }
+                }
+                if (j == Router.routingTable.size()) {
+                    System.out.println("Dropped " + destination);
+                }
+            }
+        }
+    }
+
+    /** 
+    * @Description: 关闭Socket
+    * @Param: 
+    * @return: void
+    * @Author: 
+    * @Date: 2021/2/7
+    */
+    public void close()
+    {
+        this.datagramSocket.close();
     }
 }

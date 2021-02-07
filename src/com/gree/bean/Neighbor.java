@@ -1,18 +1,29 @@
 package com.gree.bean;
 
+
+import java.net.InetAddress;
+
 /**
  * @description:邻居节点及丢失时间
  * @author:
  * @time: 2021/2/5
  */
 public class Neighbor {
-    private int neighborId;
-    private int neighborLostTime = 0;
+    private int neighborId;//领居ID
+    private int neighborLostTime = 0;//领居丢失时间
+    private int neighborPort;//领居udp端口
 
-    public Neighbor(int id)
-    {
+    public Neighbor(int id) {
         this.neighborId = id;
         this.neighborLostTime = 0;
+    }
+
+    public int getNeighborPort() {
+        return neighborPort;
+    }
+
+    public void setNeighborPort(int neighborPort) {
+        this.neighborPort = neighborPort;
     }
 
     public void neighborLostTimeAdd() {
@@ -44,6 +55,7 @@ public class Neighbor {
         return "Neighbor{" +
                 "neighborId=" + neighborId +
                 ", neighborLostTime=" + neighborLostTime +
+                ", neighborPort=" + neighborPort +
                 '}';
     }
 }

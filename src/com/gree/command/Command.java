@@ -2,6 +2,8 @@ package com.gree.command;
 
 import com.gree.bean.Routing;
 import com.gree.router.Router;
+import com.gree.udp.UdpClient;
+import com.gree.udp.UdpData;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,15 +23,16 @@ public class Command extends Thread {
      * @Author:
      * @Date: 2021/2/5
      */
-    public static boolean isStartArguments(String[] args) {
+    public static boolean isStartArguments(String[] arguments) {
+        String[] args = arguments[0].split(",");
         if (args.length < 2) {//判断启动参数是否正确,启动参数必须包括ID和myport;
-            System.out.println("参数错误,至少需要输入两个个参数");
+            System.out.println("参数错误,至少需要输入router id与port 两个数值");
             return false;
         } else {
             try {
-                Router.routerId = Integer.parseInt(args[0]);
-                Router.myPort = Integer.parseInt(args[1]);
-                if (args.length >= 3) {
+                Router.routerId = Integer.parseInt(args[0]);//获取id
+                Router.myPort = Integer.parseInt(args[1]);//获取端口
+                if (args.length >= 3) {//获取其他端口
                     int tempPort[] = new int[args.length - 2];
                     for (int i = 0; i < args.length - 2; i++) {
                         tempPort[i] = Integer.parseInt(args[i + 2]);
@@ -54,7 +57,7 @@ public class Command extends Thread {
     public static void commandN() {
         if (Router.neighbors != null) {
             for (int i = 0; i < Router.neighbors.size(); i++) {
-                System.out.print(Router.neighbors.get(i).getNeighborId() + "\t");
+                System.out.print(Router.neighbors.get(i).getNeighborId() + "\t");//打印领居节点
             }
             System.out.println();
         }
@@ -69,14 +72,19 @@ public class Command extends Thread {
      */
     public static void commandRT() {
 
-        System.out.println("Destination" + "\t" + "route");
+        System.out.println("Destination" + "\t" + "route");//打印表头
         if (Router.routingTable != null) {
             for (int i = 0; i < Router.routingTable.size(); i++) {
-                System.out.print(Router.routingTable.get(i).getDestination() + "\t");
+                System.out.print(Router.routingTable.get(i).getDestination() + "\t");//打印目的地
                 for (int j = 0; j < Router.routingTable.get(i).getRoute().length; j++) {
-                    System.out.print(Router.routingTable.get(i).getRoute()[j] + "\t");
+                    if(j==(Router.routingTable.get(i).getRoute().length-1)) {
+                        System.out.println(Router.routingTable.get(i).getRoute()[j]);//打印路径(最后一个)
+                    }
+                    else
+                    {
+                        System.out.print(Router.routingTable.get(i).getRoute()[j] + ",");//打印路径
+                    }
                 }
-                System.out.println();
             }
         }
     }
@@ -89,7 +97,37 @@ public class Command extends Thread {
      * @Date: 2021/2/5
      */
     public static void commandD(int n) {
-        //TODO:待补充实现方法
+        int i = 0;
+        int TTL = 15;
+        for (i = 0; i < Router.neighbors.size(); i++) {
+            if (n == Router.neighbors.get(i).getNeighborId()) {
+                UdpClient udpClient = new UdpClient(Router.neighbors.get(i).getNeighborPort());//发送给领居
+                udpClient.sendTTL(n, TTL);
+                System.out.println("Direct to " + n);
+                break;
+            }
+        }
+        if (i == Router.neighbors.size())//n不为领居节点
+        {
+            int j = 0;
+            for (j = 0; j < Router.routingTable.size(); j++) {
+                if (Router.routingTable.get(j).getDestination() == n) {
+                    int nextRouterID = Router.routingTable.get(j).getRoute()[0];//获取下一个节点ID
+                    for (int k = 0; k < Router.neighbors.size(); k++) {
+                        if (nextRouterID == Router.neighbors.get(k).getNeighborId())//查询下一个节点的端口
+                        {
+                            UdpClient udpClient = new UdpClient(Router.neighbors.get(k).getNeighborPort());//先发送给相邻的下一个节点
+                            udpClient.sendTTL(n, TTL);
+                        }
+                    }
+                    break;
+                }
+            }
+            if (j == Router.routingTable.size()) {//路由表中无此目的节点
+                System.out.println("No route to " + n);
+            }
+        }
+
     }
 
     /**
@@ -138,7 +176,7 @@ public class Command extends Thread {
         if (Router.refusedNode == null) {
             Router.refusedNode = new ArrayList<Integer>();
         }
-        Router.refusedNode.add(n);
+        Router.refusedNode.add(n);//添加拒绝更新节点
     }
 
     /**
@@ -149,7 +187,7 @@ public class Command extends Thread {
      * @Date: 2021/2/5
      */
     public static void commandS() {
-        System.out.println("本路由表更新次数:" + Router.updateTimes);
+        System.out.println("本路由表更新次数:" + Router.updateTimes);//打印路由表更新次数
     }
 
     /**
@@ -248,7 +286,13 @@ public class Command extends Thread {
         }
     }
 
-    //判断此更新是否在拒绝更新列表中
+    /**
+    * @Description: 判断此更新是否在拒绝更新列表中
+    * @Param: route:需要判断的路由数据
+    * @return: boolean
+    * @Author:
+    * @Date: 2021/2/7
+    */
     public static boolean isRefusedPassNode(int[] route) {
         if (Router.refusedNode != null) {
             for (int i = 0; i < route.length; i++) {
@@ -262,6 +306,13 @@ public class Command extends Thread {
         return false;
     }
 
+    /**
+    * @Description: 判断是否为特殊路由
+    * @Param: routing:需要判断的路由表项
+    * @return: boolean
+    * @Author:
+    * @Date: 2021/2/7
+    */
     public static boolean isSpecifiedPriorityRoute(Routing routing) {
         return (!routing.isAutoUpdateFlag());
     }

@@ -44,4 +44,27 @@ public class UdpClient {
         this.udpData.receive();
     }
 
+    /**
+    * @Description: 发送TTL
+    * @Param: destination:目的地,TTL:ttl数据
+    * @return: void
+    * @Author:
+    * @Date: 2021/2/7
+    */
+    public void sendTTL(int destination, int TTL) {
+        this.udpData.sendTTL(destination, TTL);
+    }
+
+    /**
+    * @Description: 关闭Socket
+    * @Param:
+    * @return: void
+    * @Author:
+    * @Date: 2021/2/7
+    */
+    public void close()
+    {
+        this.udpData.close();
+    }
+
 }

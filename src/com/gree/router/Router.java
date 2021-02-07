@@ -59,7 +59,7 @@ public class Router extends Thread {
             int j = 0;
             for (j = 0; j < Router.routingTable.size(); j++) {
                 Routing myRouting = Router.routingTable.get(j);
-                if (sourceRouting.getDestination() == myRouting.getDestination()) {
+                if (sourceRouting.getDestination() == myRouting.getDestination()) {//判断此路由表中是否有此路由信息
                     if (((sourceRouting.getRoute().length + 1) < myRouting.getRoute().length))//如果发送来的路由比本路由路径短,则替换
                     {
                         if (sourceRouting.getRoute()[0] != Router.routerId)//判断该路由的下一节点是否为自身,若不为自身则执行常规路由更新
@@ -143,7 +143,7 @@ public class Router extends Thread {
                         route[k] = sourceRouting.getRoute()[k + 1];
                     }
                     routing.setRoute(route);
-                    if ((!Command.isRefusedPassNode(route)) )//非拒绝节点则更新
+                    if ((!Command.isRefusedPassNode(route)))//非拒绝节点则更新
                     {
                         Router.routingTable.add(routing);
                         Router.updateTimes++;//更新次数加1
