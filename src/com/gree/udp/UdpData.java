@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 /**
  * @description:
- * @author:
+ * @author: Eventi
  * @time: 2021/2/6
  */
 public class UdpData {
@@ -27,7 +27,7 @@ public class UdpData {
      * @Description: 构造函数
      * @Param: udpSeverPort:端口,type:使用角色
      * @return:
-     * @Author:
+     * @Author: Eventi
      * @Date: 2021/2/6
      */
     public UdpData(int udpServerPort, String type) {
@@ -54,7 +54,7 @@ public class UdpData {
      * @Description: 发送路由表
      * @Param:
      * @return: void
-     * @Author:
+     * @Author: Eventi
      * @Date: 2021/2/6
      */
     public void sendRoutingTable() {
@@ -74,7 +74,7 @@ public class UdpData {
      * @Description: 打包发送路由表数据
      * @Param: dataType:数据类别
      * @return: byte[] 返回打包后的字节数据
-     * @Author:
+     * @Author: Eventi
      * @Date: 2021/2/6
      */
     public byte[] dataPack(String dataType) {
@@ -110,7 +110,7 @@ public class UdpData {
      * @Description: 处理接收到的路由表数据
      * @Param:
      * @return: void
-     * @Author:
+     * @Author: Eventi
      * @Date: 2021/2/6
      */
     public void dealRoutingTableData(JSONObject jsonObject) {
@@ -159,7 +159,7 @@ public class UdpData {
      * @Description: 回复客户端发来的路由表数据(将自己路由表发送给客户端)
      * @Param:
      * @return: void
-     * @Author:
+     * @Author: Eventi
      * @Date: 2021/2/6
      */
     public void routingTableDataResponse() {
@@ -178,7 +178,7 @@ public class UdpData {
      * @Description:接收数据(此函数会阻塞)
      * @Param:
      * @return: void
-     * @Author:
+     * @Author: Eventi
      * @Date: 2021/2/6
      */
     public void receive() {
@@ -220,7 +220,7 @@ public class UdpData {
     * @Description: 发送TTL数据
     * @Param: destination:目的地,TTL:ttl数据
     * @return: void
-    * @Author:
+    * @Author: Eventi
     * @Date: 2021/2/7
     */
     public void sendTTL(int destination, int TTL) {
@@ -243,7 +243,7 @@ public class UdpData {
     * @Description: 处理接收到TTL数据
     * @Param: jsonObject 传入接收到的json数据
     * @return: void
-    * @Author:
+    * @Author: Eventi
     * @Date: 2021/2/7
     */
     public void dealTTLData(JSONObject jsonObject) {
@@ -283,7 +283,7 @@ public class UdpData {
     * @Description: 关闭Socket
     * @Param: 
     * @return: void
-    * @Author: 
+    * @Author: Eventi
     * @Date: 2021/2/7
     */
     public void close()

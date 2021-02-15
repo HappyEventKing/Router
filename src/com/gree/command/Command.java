@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 /**
  * @description:命令判断与执行
- * @author:
+ * @author: Eventi
  * @time: 2021/2/5
  */
 public class Command extends Thread {
@@ -20,7 +20,7 @@ public class Command extends Thread {
      * @Description: 判断启动命令
      * @Param:
      * @return: boolean
-     * @Author:
+     * @Author: Eventi
      * @Date: 2021/2/5
      */
     public static boolean isStartArguments(String[] arguments) {
@@ -51,7 +51,7 @@ public class Command extends Thread {
      * @Description: N命令
      * @Param:
      * @return: void
-     * @Author:
+     * @Author: Eventi
      * @Date: 2021/2/5
      */
     public static void commandN() {
@@ -67,7 +67,7 @@ public class Command extends Thread {
      * @Description: RT命令
      * @Param:
      * @return: void
-     * @Author:
+     * @Author: Eventi
      * @Date: 2021/2/5
      */
     public static void commandRT() {
@@ -93,7 +93,7 @@ public class Command extends Thread {
      * @Description: D命令
      * @Param:
      * @return: void
-     * @Author:
+     * @Author: Eventi
      * @Date: 2021/2/5
      */
     public static void commandD(int n) {
@@ -134,7 +134,7 @@ public class Command extends Thread {
      * @Description: PK命令
      * @Param:
      * @return: void
-     * @Author:
+     * @Author: Eventi
      * @Date: 2021/2/5
      */
     public static void commandPK(int[] n) {
@@ -169,7 +169,7 @@ public class Command extends Thread {
      * @Description: R命令
      * @Param:
      * @return: void
-     * @Author:
+     * @Author: Eventi
      * @Date: 2021/2/5
      */
     public static void commandR(int n) {
@@ -183,7 +183,7 @@ public class Command extends Thread {
      * @Description: S命令
      * @Param:
      * @return: void
-     * @Author:
+     * @Author: Eventi
      * @Date: 2021/2/5
      */
     public static void commandS() {
@@ -194,7 +194,7 @@ public class Command extends Thread {
      * @Description: 判断并执行命令
      * @Param: str:命令
      * @return: boolean
-     * @Author:
+     * @Author: Eventi
      * @Date: 2021/2/5
      */
     public static boolean isCommand(String str) {
@@ -262,7 +262,7 @@ public class Command extends Thread {
      * @Description: 命令交互进程
      * @Param:
      * @return: void
-     * @Author:
+     * @Author: Eventi
      * @Date: 2021/2/5
      */
     public void run() {
@@ -290,7 +290,7 @@ public class Command extends Thread {
     * @Description: 判断此更新是否在拒绝更新列表中
     * @Param: route:需要判断的路由数据
     * @return: boolean
-    * @Author:
+    * @Author: Eventi
     * @Date: 2021/2/7
     */
     public static boolean isRefusedPassNode(int[] route) {
@@ -310,7 +310,7 @@ public class Command extends Thread {
     * @Description: 判断是否为特殊路由
     * @Param: routing:需要判断的路由表项
     * @return: boolean
-    * @Author:
+    * @Author: Eventi
     * @Date: 2021/2/7
     */
     public static boolean isSpecifiedPriorityRoute(Routing routing) {

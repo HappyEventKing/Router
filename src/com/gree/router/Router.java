@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 /**
  * @description:Router实现
- * @author:
+ * @author: Eventi
  * @time: 2021/2/4
  */
 public class Router extends Thread {
@@ -28,7 +28,7 @@ public class Router extends Thread {
      * @Description: 发送路由表, 实现(Each router sends out their routing table every 30 seconds.)
      * @Param:
      * @return: void
-     * @Author:
+     * @Author: Eventi
      * @Date: 2021/2/5
      */
     public static void sendRoutingTable() {
@@ -50,7 +50,7 @@ public class Router extends Thread {
      * @Description: 更新路由表, 实现(Each router updates its own routing table according to the received routing table. ...)
      * @Param: [sourceRouterId, sourceRoutingTable]
      * @return: void
-     * @Author: ManolinCoder
+     * @Author: Eventi
      * @Date: 2021/2/5
      */
     public static void updateRoutingTableFromOther(int sourceRouterId, ArrayList<Routing> sourceRoutingTable) {
@@ -158,7 +158,7 @@ public class Router extends Thread {
     * @Description: 根据新增领居,到达领居节点的路由
     * @Param: 
     * @return: void
-    * @Author: 
+    * @Author: Eventi
     * @Date: 2021/2/7
     */
     public static void updateNeighborRoutingTable(int nextRouterId,int k)
@@ -176,7 +176,7 @@ public class Router extends Thread {
      * @Description: 给Router添加领居
      * @Param: nextRouterId:领居ID
      * @return: void
-     * @Author:
+     * @Author: Eventi
      * @Date: 2021/2/6
      */
     public static void isAddNeighborToRoutingTable(int nextRouterId) {
@@ -207,7 +207,7 @@ public class Router extends Thread {
      * @Description: 根据发现的领居更新路由表
      * @Param:
      * @return: void
-     * @Author:
+     * @Author: Eventi
      * @Date: 2021/2/6
      */
     public static void updateRoutingTableFromNeighbor() {
@@ -257,7 +257,7 @@ public class Router extends Thread {
      * @Description: 扫描附近节点, 实现(Routers must have the ability to detect whether a neighbor is active. ...)
      * @Param: []
      * @return: void
-     * @Author: ManolinCoder
+     * @Author: Eventi
      * @Date: 2021/2/5
      */
     public static void neighborDetect() {
@@ -291,7 +291,7 @@ public class Router extends Thread {
      * @Description: 启动路由进程并等待和处理输入命令
      * @Param:
      * @return: void
-     * @Author:
+     * @Author: Eventi
      * @Date: 2021/2/5
      */
     public void run() {

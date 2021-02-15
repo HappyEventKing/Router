@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 /**
  * @description:Udp客户端
- * @author:
+ * @author: Eventi
  * @time: 2021/2/5
  */
 public class UdpClient {
@@ -24,7 +24,7 @@ public class UdpClient {
      * @Description: 构造函数
      * @Param: port:端口
      * @return:
-     * @Author:
+     * @Author: Eventi
      * @Date: 2021/2/6
      */
     public UdpClient(int port) {
@@ -36,7 +36,7 @@ public class UdpClient {
      * @Description: 发送路由表数据(发送完后转接收)
      * @Param:
      * @return: void
-     * @Author:
+     * @Author: Eventi
      * @Date: 2021/2/6
      */
     public void sendRoutingTable() {
@@ -48,7 +48,7 @@ public class UdpClient {
     * @Description: 发送TTL
     * @Param: destination:目的地,TTL:ttl数据
     * @return: void
-    * @Author:
+    * @Author: Eventi
     * @Date: 2021/2/7
     */
     public void sendTTL(int destination, int TTL) {
@@ -59,7 +59,7 @@ public class UdpClient {
     * @Description: 关闭Socket
     * @Param:
     * @return: void
-    * @Author:
+    * @Author: Eventi
     * @Date: 2021/2/7
     */
     public void close()

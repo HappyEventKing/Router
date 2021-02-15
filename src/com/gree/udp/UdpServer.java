@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 /**
  * @description:Udp服务端
- * @author:
+ * @author: Eventi
  * @time: 2021/2/5
  */
 public class UdpServer extends Thread {
@@ -28,7 +28,7 @@ public class UdpServer extends Thread {
      * @Description: 构造函数
      * @Param: prot:服务端端口
      * @return:
-     * @Author:
+     * @Author: Eventi
      * @Date: 2021/2/6
      */
     public UdpServer(int port) {
@@ -39,7 +39,7 @@ public class UdpServer extends Thread {
      * @Description: 服务端接收进程
      * @Param:
      * @return: void
-     * @Author:
+     * @Author: Eventi
      * @Date: 2021/2/6
      */
     public void run() {

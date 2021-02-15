@@ -5,7 +5,7 @@ import java.net.InetAddress;
 
 /**
  * @description:邻居节点及丢失时间
- * @author:
+ * @author: Eventi
  * @time: 2021/2/5
  */
 public class Neighbor {
