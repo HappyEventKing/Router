@@ -1,14 +1,4 @@
-package com.gree.udp;
-
-import com.gree.bean.Routing;
-import com.gree.router.Router;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.*;
-import java.util.ArrayList;
+package com.hek.udp;
 
 /**
  * @description:Udp客户端

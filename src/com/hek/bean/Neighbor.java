@@ -1,7 +1,5 @@
-package com.gree.bean;
+package com.hek.bean;
 
-
-import java.net.InetAddress;
 
 /**
  * @description:邻居节点及丢失时间

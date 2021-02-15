@@ -1,4 +1,4 @@
-package com.gree.bean;
+package com.hek.bean;
 
 import java.util.Arrays;
 

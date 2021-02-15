@@ -1,9 +1,8 @@
-package com.gree.command;
+package com.hek.command;
 
-import com.gree.bean.Routing;
-import com.gree.router.Router;
-import com.gree.udp.UdpClient;
-import com.gree.udp.UdpData;
+import com.hek.bean.Routing;
+import com.hek.router.Router;
+import com.hek.udp.UdpClient;
 
 import java.io.BufferedReader;
 import java.io.IOException;
